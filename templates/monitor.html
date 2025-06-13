@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enrollment Monitoring</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+
+    h1 {
+      color: #004d99;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 30px;
+      background: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #004d99;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f0f0f0;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+
+    .back:hover {
+      background-color: #0056b3;
+    }
+
+    h2 {
+      margin-top: 40px;
+      color: #006699;
+    }
+  </style>
+</head>
+<body>
+  <a href="/" class="back">⬅ Back to Dashboard</a>
+  <h1>Enrollment Monitoring</h1>
+
+  <h2>By Enrollment Type</h2>
+  <table>
+    <tr><th>Type</th><th>Total</th></tr>
+    {% for tag, total in tag_totals.items() %}
+      <tr>
+        <td>{{ tag.replace('_', ' ').title() }}</td>
+        <td>{{ total }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <h2>By Grade Level</h2>
+  <table>
+    <tr><th>Grade</th><th>Male</th><th>Female</th><th>Total</th></tr>
+    {% for grade, data in grade_data.items() %}
+      <tr>
+        <td>{{ grade }}</td>
+        <td>{{ data['M'] }}</td>
+        <td>{{ data['F'] }}</td>
+        <td>{{ data['Total'] }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <h2>By Section</h2>
+  <table>
+    <tr><th>Section</th><th>Male</th><th>Female</th><th>Total</th></tr>
+    {% for section, data in section_data.items() %}
+      <tr>
+        <td>{{ section }}</td>
+        <td>{{ data['M'] }}</td>
+        <td>{{ data['F'] }}</td>
+        <td>{{ data['Total'] }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <h2>School-Wide Totals</h2>
+  <table>
+    <tr><th>Male</th><th>Female</th><th>Total</th></tr>
+    <tr>
+      <td>{{ school_totals['M'] }}</td>
+      <td>{{ school_totals['F'] }}</td>
+      <td>{{ school_totals['Total'] }}</td>
+    </tr>
+  </table>
+
+  <h2>Inactive Learners (Previous Year)</h2>
+  <table>
+    <tr><th>Previous Grade</th><th>Total</th></tr>
+    {% for grade, total in inactive_counts.items() %}
+      <tr>
+        <td>{{ grade }}</td>
+        <td>{{ total }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Learners for Grade {{ grade|capitalize }}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    h1 {
+      color: #004d99;
+    }
+
+    .top-buttons {
+      margin-bottom: 20px;
+    }
+
+    .top-buttons a, .top-buttons button {
+      display: inline-block;
+      padding: 8px 14px;
+      margin-right: 10px;
+      text-decoration: none;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .top-buttons a:hover, .top-buttons button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background-color: white;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #004d99;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    select, input[type="submit"] {
+      padding: 6px;
+      margin-left: 6px;
+      font-size: 14px;
+    }
+
+    .status-active {
+      color: green;
+      font-weight: bold;
+    }
+
+    .status-inactive {
+      color: red;
+      font-weight: bold;
+    }
+
+    .filter-form {
+      margin-bottom: 15px;
+    }
+  </style>
+  <script>
+    function confirmEnroll(grade) {
+      if (confirm("✅ Successfully enrolled to Grade " + grade)) {
+        window.location.href = "/enroll_active/" + grade;
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <h1>Learners for Grade {{ grade|capitalize }}</h1>
+
+  <div class="top-buttons">
+    <a href="/">⬅ Back to Dashboard</a>
+    <button onclick="confirmEnroll('{{ grade }}')">✅ Enroll Active Learners</button>
+    <a href="/add_learner">➕ Add Learner</a>
+  </div>
+
+  <form class="filter-form" method="get" action="/grade/{{ grade }}">
+    <label>Sort by:
+      <select name="sort_by">
+        <option value="full_name" {{ 'selected' if sort_by == 'full_name' else '' }}>Name</option>
+        <option value="prev_section" {{ 'selected' if sort_by == 'prev_section' else '' }}>Previous Section</option>
+      </select>
+    </label>
+
+    <label>Filter by Section:
+      <select name="section">
+        <option value="">All Sections</option>
+        {% for sec in sections %}
+        <option value="{{ sec }}" {{ 'selected' if selected_section == sec else '' }}>{{ sec }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <input type="submit" value="Apply">
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>LRN</th>
+        <th>Full Name</th>
+        <th>Prev Grade</th>
+        <th>Prev Section</th>
+        <th>Status</th>
+        <th>Current Enrollment</th>
+        <th>Tag</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for learner in learners %}
+      <tr>
+        <td>{{ learner['lrn'] }}</td>
+        <td>{{ learner['full_name'] }}</td>
+        <td>{{ learner['prev_grade'] }}</td>
+        <td>{{ learner['prev_section'] }}</td>
+        <td>
+          <a href="/toggle_status/{{ learner['id'] }}/{{ grade }}?sort_by={{ sort_by }}&section={{ selected_section }}">
+            <span class="status-{{ learner['status'] }}">{{ learner['status'].capitalize() }}</span>
+          </a>
+        </td>
+        <td>{{ learner['current_grade'] or '—' }}</td>
+        <td>{{ learner['tag'].replace('_', ' ').title() }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+</html>
